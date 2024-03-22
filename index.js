@@ -106,10 +106,6 @@ app.use('/flights', flightsRouter);
 
 
 
-
-
-
-
 app.post('/api/booking', async (req, res) => {
   const { flightId } = req.body;
   const userId = req.headers.userId;
@@ -153,7 +149,6 @@ app.put('/api/dashboard/:id', async (req, res) => {
     if (!user) {
       return res.status(401).json({ msg: 'Unauthorized' });
     }
-    // Update the booking
     const updatedBooking = await BookingModel.findByIdAndUpdate(id, { flight: flightId }, { new: true });
     if (!updatedBooking) {
       return res.status(404).json({ message: 'Booking not found' });

@@ -1,70 +1,35 @@
 express= require('express');
 const flightsRouter = express.Router();
-const flightsModel = require('../models/flight.module');
+const FlightModel = require('../models/flight.module');
 const UserModel = require('../models/User.module');
 flightsRouter.use(express.json());
-const jwt =require('jsonwebtoken');
 
 
-
-
-
-flightsRouter.get('/my', async (req, res) => {
-  const { type } = req.query;
-  const userId = req.headers.userId;
-
+flightsRouter.post('/', async (req, res) => {
+  const { airline,flightNo ,departure,arrival ,departureTime ,arrivalTime ,seats,  price}  = req.body;
   try {
-      let flightss;
-
-      if (type) {
-          flightss = await flightsModel.find({ type, user_id: userId });
-      } else {
-          flightss = await flightsModel.find({ user_id: userId });
-      }
-
-      res.send(flightss);
-  } catch (error) {
-      console.log(error);
-      res.status(500).send('Internal Server Error');
+    const flights = await FlightModel.create({  airline,flightNo ,departure,arrival ,departureTime ,arrivalTime ,seats,  price});
+    res.status(201).json({ msg: 'flights created successfully', flights});
   }
-});
-
-
-flightsRouter.post('/create', async (req, res) => {
-  const { title, content, type ,imageUrl } = req.body;
-  const userId = req.headers.userId;
-  try {
-    const user = await UserModel.findOne({ _id: userId });
-    if (!user) {
-      return res.status(401).json({ msg: 'Unauthorized' });
-    }
-    const flights = await flightsModel.create({ title, content, auth_email: user.email, user_id: user._id, type, imageUrl });
-    res.status(201).json({ msg: 'flights created successfully', flights });
-  } catch (error) {
-    console.error(error);
+  catch (error) {
     res.status(500).json({ msg: 'Server error' });
   }
 });
 
 
 
-
-
-
-
-flightsRouter.put('/update/:id', async (req, res) => {
+flightsRouter.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { title, content } = req.body;
+  const { airline,flightNo ,departure,arrival ,departureTime ,arrivalTime ,seats,  price}  = req.body;
 
   try {
-      const updatedflights = await flightsModel.findByIdAndUpdate(id, { title, content }, { new: true });
-
+      const updatedflights = await FlightModel.findByIdAndUpdate(id, { airline,flightNo ,departure,arrival ,departureTime ,arrivalTime ,seats,  price}, { new: true });
       if (!updatedflights) {
           return res.status(404).json({ message: 'flights not found' });
       }
-
       res.json({ message: 'flights updated successfully', flights: updatedflights });
-  } catch (error) {
+  }
+  catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
   }
@@ -72,20 +37,20 @@ flightsRouter.put('/update/:id', async (req, res) => {
 
 
 
-flightsRouter.delete('/delete/:id', async (req, res) => {
+flightsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-      const deletedflights = await flightsModel.findByIdAndDelete(id);
-
+      const deletedflights = await FlightModel.findByIdAndDelete(id);
       if (!deletedflights) {
           return res.status(404).json({ message: 'flights not found' });
       }
-
       res.json({ message: 'flights deleted successfully', flights: deletedflights });
-  } catch (error) {
+  }
+  catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = flightsRouter;

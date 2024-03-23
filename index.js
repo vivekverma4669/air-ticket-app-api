@@ -98,8 +98,6 @@ app.get('/flights/:id', async (req, res) => {
 });
 
 
-
-
 app.use(autentication);
 app.use('/flights', flightsRouter);
 
@@ -124,7 +122,7 @@ app.post('/api/booking', async (req, res) => {
 
 
 app.get('/api/dashboard', async (req, res) => {
-  const { userId } = req.headers;
+  const { userId } = req.headers.userId;
   
   try {
     const user = await UserModel.findOne({ _id: userId });
@@ -161,7 +159,7 @@ app.put('/api/dashboard/:id', async (req, res) => {
 });
 
 app.delete('/api/dashboard/:id', async (req, res) => {
-  const { userId } = req.headers;
+  const { userId } = req.headers.userId;
   const { id } = req.params;
 
   try {
@@ -179,8 +177,6 @@ app.delete('/api/dashboard/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-
 
 
 

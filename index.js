@@ -27,6 +27,10 @@ app.get('/', (req, res) => {
   res.send({ 'app running you are on home page now': req.headers });
 });
 
+app.get('/hello', (req,res)=>{
+  res.send('hello bro');
+});
+
 app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
   try {
